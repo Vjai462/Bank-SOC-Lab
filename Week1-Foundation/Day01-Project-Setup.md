@@ -40,7 +40,6 @@ mkdir vm-shared
 Result:
 Successfully created complete folder structure:
 
-text
 C:\Bank-SOC-Project\
 ├── docs\
 ├── incident-reports\
