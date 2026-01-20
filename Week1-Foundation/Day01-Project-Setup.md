@@ -50,15 +50,10 @@ C:\Bank-SOC-Project\
 ├── screenshots\
 └── vm-shared\
 
-Screenshot Evidence:
+**Result:**
+Successfully created complete folder structure:
 
-ORIGINAL: Folder structure showing all 7 subfolders created in Bank-SOC-Project directory
-
-RENAME TO: 20251206_Day01_Windows_FolderStructure.png
-
-LOCATION: Week1-Foundation/screenshots/day1/
-
-WHAT IT SHOWS: File Explorer window displaying C:\Bank-SOC-Project\ with all subdirectories (docs, incident-reports, splunk-searches, runbooks, architecture, screenshots, vm-shared)
+![Folder Structure](screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
 
 ✅ Task 1 Complete
 
@@ -136,15 +131,9 @@ Week 2 (Days 8-14): Alerts, Attacks & Incident Response
 Week 3 (Days 15-21): Advanced Threats & Threat Hunting
 Week 4 (Days 22-30): Dashboard Optimization & Portfolio Presentation
 
-Screenshot Evidence:
+**Screenshot:**
 
-ORIGINAL: Notepad window showing completed 00_project_overview.txt file
-
-RENAME TO: 20251206_Day01_ProjectOverview.png
-
-LOCATION: Week1-Foundation/screenshots/day1/
-
-WHAT IT SHOWS: Project overview document open in Notepad with all sections filled (goals, architecture, milestones)
+![Project Overview](screenshots/day1/20251206_Day01_ProjectOverview.png)
 
 ✅ Task 2 Complete
 
@@ -186,13 +175,9 @@ Example: 50 failed logins → Alert fires → Analyst investigates →
 Confirms it's attacker from China → Now it's an Incident
 creenshot Evidence:
 
-ORIGINAL: 01_soc_concepts.txt file showing all 6 concepts defined with banking examples
+**Screenshot:**
 
-RENAME TO: 20251206_Day01_SOCConcepts.png
-
-LOCATION: Week1-Foundation/screenshots/day1/
-
-WHAT IT SHOWS: SOC concepts document with definitions, banking examples, and self-test questions answered
+![SOC Concepts](screenshots/day1/20251206_Day01_SOCConcepts.png)
 
 ✅ Task 3 Complete
 
