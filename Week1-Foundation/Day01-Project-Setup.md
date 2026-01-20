@@ -53,7 +53,7 @@ C:\Bank-SOC-Project\
 **Result:**
 Successfully created complete folder structure:
 
-![Folder Structure](screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
+![Folder Structure](./screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
 
 ✅ Task 1 Complete
 
@@ -133,7 +133,7 @@ Week 4 (Days 22-30): Dashboard Optimization & Portfolio Presentation
 
 **Screenshot:**
 
-![Project Overview](screenshots/day1/20251206_Day01_ProjectOverview.png)
+![Project Overview](./screenshots/day1/20251206_Day01_ProjectOverview.png)
 
 ✅ Task 2 Complete
 
@@ -177,7 +177,7 @@ creenshot Evidence:
 
 **Screenshot:**
 
-![SOC Concepts](screenshots/day1/20251206_Day01_SOCConcepts.png)
+![SOC Concepts](./screenshots/day1/20251206_Day01_SOCConcepts.png)
 
 ✅ Task 3 Complete
 
