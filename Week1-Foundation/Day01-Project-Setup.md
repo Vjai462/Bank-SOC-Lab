@@ -50,7 +50,7 @@ C:\Bank-SOC-Project\
 └── vm-shared\
 
 **Result:**
-Successfully created complete folder structure:
+Successfully created complete folder structure.
 
 ![Folder Structure](screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
 
