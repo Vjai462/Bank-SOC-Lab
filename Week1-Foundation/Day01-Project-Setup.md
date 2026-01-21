@@ -36,10 +36,11 @@ mkdir runbooks
 mkdir architecture
 mkdir screenshots
 mkdir vm-shared
-'''
-Result:
-Successfully created complete folder structure:
+```
 
+**Result:**
+Successfully created complete folder structure:
+```
 C:\Bank-SOC-Project\
 ├── docs\
 ├── incident-reports\
@@ -48,11 +49,11 @@ C:\Bank-SOC-Project\
 ├── architecture\
 ├── screenshots\
 └── vm-shared\
+```
 
-**Result:**
-Successfully created complete folder structure.
+**Screenshot:**
 
-![Folder Structure](screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
+![Folder Structure](Week1-Foundation/screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
 
 ✅ Task 1 Complete
 
