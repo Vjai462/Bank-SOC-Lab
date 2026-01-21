@@ -53,7 +53,7 @@ C:\Bank-SOC-Project\
 
 **Screenshot:**
 
-![Folder Structure](Week1-Foundation/screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
+![Folder Structure](screenshots/day1/20251206_Day01_Windows_FolderStructure.png)
 
 ✅ Task 1 Complete
 
