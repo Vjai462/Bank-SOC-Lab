@@ -36,7 +36,7 @@ mkdir runbooks
 mkdir architecture
 mkdir screenshots
 mkdir vm-shared
-
+'''
 Result:
 Successfully created complete folder structure:
 
