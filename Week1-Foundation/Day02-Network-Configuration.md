@@ -102,35 +102,41 @@ Attached to: NAT
 # After restart, verify workgroup:
 (Get-WmiObject Win32_ComputerSystem).Domain
 # Output: WORKGROUP
+```
 
-Step 2 - Rename Computer:
+**Step 2 - Rename Computer:**
+```powershell
 Rename-Computer -NewName "BANK-DC01" -Restart
 
 # After restart, verify:
 $env:COMPUTERNAME
 # Output: BANK-DC01
+```
 
-![DC01 Renamed](/screenshots/day2/20251207_Day02_DC01_Renamed_01.png.png)
+![DC01 Renamed](screenshots/day2/20251207_Day02_DC01_Renamed_01.png)
 
-Step 3 - Configure Static IP:
+**Step 3 - Configure Static IP:**
 
-Control Panel → Network and Sharing Center → Change adapter settings
-Right-click Host-Only adapter → Properties
-Select "Internet Protocol Version 4 (TCP/IPv4)" → Properties
+1. Control Panel → Network and Sharing Center → Change adapter settings
+2. Right-click Host-Only adapter → Properties
+3. Select "Internet Protocol Version 4 (TCP/IPv4)" → Properties
 
-Configure:
-  ⦿ Use the following IP address:
-    IP address: 192.168.56.10
-    Subnet mask: 255.255.255.0
-    Default gateway: 192.168.56.1
-  
-  ⦿ Use the following DNS server addresses:
-    Preferred DNS: 8.8.8.8
-    Alternate DNS: 8.8.4.4
+**Configure:**
+```
+⦿ Use the following IP address:
+  IP address: 192.168.56.10
+  Subnet mask: 255.255.255.0
+  Default gateway: 192.168.56.1
 
-Click OK → OK
+⦿ Use the following DNS server addresses:
+  Preferred DNS: 8.8.8.8
+  Alternate DNS: 8.8.4.4
+```
 
-Step 4 - Verify Configuration:
+4. Click OK → OK
+
+**Step 4 - Verify Configuration:**
+```cmd
 ipconfig /all
 
 # Expected output:
@@ -148,18 +154,15 @@ ping 192.168.56.1
 
 ping 8.8.8.8
 # Result: 4 replies received (internet working via NAT) ✓
+```
 
-Result:
+**Result:**
+- BANK-DC01 renamed successfully
+- Static IP 192.168.56.10 configured
+- Can ping host (192.168.56.1)
+- Internet access working via NAT adapter
 
-BANK-DC01 renamed successfully
-
-Static IP 192.168.56.10 configured
-
-Can ping host (192.168.56.1)
-
-Internet access working via NAT adapter
-
-✅ Task 3 Complete
+✅ **Task 3 Complete**
 
 Task 4: Configure Static IP on Windows 10 (BANK-EMP01)
 What We Did:
@@ -174,28 +177,33 @@ Verified connectivity to host and BANK-DC01
 
 Configuration Steps:
 
-Step 1 - Configure Static IP:
+**Configuration Steps:**
 
-Settings → Network & Internet → Change adapter options
-Right-click Host-Only adapter (192.168.56.x) → Properties
-Select IPv4 → Properties
+**Step 1 - Configure Static IP:**
 
-Configure:
-  IP address: 192.168.56.11
-  Subnet mask: 255.255.255.0
-  Default gateway: 192.168.56.1
-  Preferred DNS: 8.8.8.8
-  Alternate DNS: 8.8.4.4
+1. Settings → Network & Internet → Change adapter options
+2. Right-click Host-Only adapter (192.168.56.x) → Properties
+3. Select IPv4 → Properties
 
-Click OK → OK
+**Configure:**
+```
+IP address: 192.168.56.11
+Subnet mask: 255.255.255.0
+Default gateway: 192.168.56.1
+Preferred DNS: 8.8.8.8
+Alternate DNS: 8.8.4.4
+```
 
-Step 2 - Rename Computer:
-Right-click Start → System → Rename this PC
-Enter: BANK-EMP01
-Click Next → Restart Now
+4. Click OK → OK
 
-Step 3 - Verify Configuration:
+**Step 2 - Rename Computer:**
 
+1. Right-click Start → System → Rename this PC
+2. Enter: BANK-EMP01
+3. Click Next → Restart Now
+
+**Step 3 - Verify Configuration:**
+```cmd
 hostname
 # Output: BANK-EMP01
 
@@ -213,6 +221,7 @@ ping 192.168.56.10
 
 ping 8.8.8.8
 # Result: 4 replies (internet working) ✓
+```
 
 Result:
 
@@ -253,21 +262,24 @@ ip addr show
 # enp0s3: inet 192.168.56.102/24 (Host-Only - DHCP assigned)
 # enp0s8: inet 10.0.3.15/24 (NAT)
 
-Step 2 - Check NetworkManager Connections:
+**Step 2 - Check NetworkManager Connections:**
+```bash
 nmcli connection show
 
 # Output:
 # NAME                UUID                    TYPE      DEVICE
 # Wired connection 1  abc-123...             ethernet  enp0s3
 # Wired connection 2  xyz-456...             ethernet  enp0s8
+```
 
-Step 3 - Configure Static IP on enp0s3:
+**Step 3 - Configure Static IP on enp0s3:**
+```bash
 sudo nmcli connection modify "Wired connection 1" ipv4.addresses 192.168.56.12/24
 sudo nmcli connection modify "Wired connection 1" ipv4.gateway 192.168.56.1
 sudo nmcli connection modify "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
 sudo nmcli connection modify "Wired connection 1" ipv4.method manual
 sudo nmcli connection down "Wired connection 1" && sudo nmcli connection up "Wired connection 1"
-
+```
 Step 4 - Verify Configuration:
 ip addr show enp0s3
 # inet 192.168.56.12/24 ✓
@@ -289,7 +301,7 @@ sudo hostnamectl set-hostname BANK-WEB01
 
 hostname
 # Output: BANK-WEB01 ✓
-![Ubuntu Network Configuration](screenshots/day2/20251207_Day02_Ubuntu_NetworkConfig.png (2).png)
+![Ubuntu Network Configuration](screenshots/day2/20251207_Day02_Ubuntu_NetworkConfig.png)
 
 Result:
 
@@ -431,7 +443,7 @@ Open File Explorer → See Z:\ drive "vm-shared"
 Create test file: Z:\test.txt
 Verify on host: C:\Bank-SOC-Project\vm-shared\test.txt exists ✓
 
-[!Shared Folder Working](screenshots/day2/20251207_Day02_SharedFolder_Working.png)
+![Shared Folder Working](screenshots/day2/20251207_Day02_SharedFolder_Working.png)
 
 Result:
 
