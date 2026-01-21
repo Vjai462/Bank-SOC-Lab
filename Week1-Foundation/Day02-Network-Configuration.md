@@ -52,15 +52,15 @@ Enterprise SOC environments require stable, predictable network configurations f
 Right-click VM → Settings → Network
 
 Adapter 1:
-✓ Enable Network Adapter
-Attached to: Host-only Adapter
-Name: VirtualBox Host-Only Ethernet Adapter
-Adapter Type: Intel PRO/1000 MT Desktop
-Promiscuous Mode: Deny
+- ✓ Enable Network Adapter
+- Attached to: Host-only Adapter
+- Name: VirtualBox Host-Only Ethernet Adapter
+- Adapter Type: Intel PRO/1000 MT Desktop
+- Promiscuous Mode: Deny
 
 Adapter 2:
-✓ Enable Network Adapter
-Attached to: NAT
+- ✓ Enable Network Adapter
+- Attached to: NAT
 
 **Result:**
 - All VMs configured with dual adapters
@@ -164,18 +164,15 @@ ping 8.8.8.8
 
 ✅ **Task 3 Complete**
 
-Task 4: Configure Static IP on Windows 10 (BANK-EMP01)
-What We Did:
+---
 
-Started BANK-EMP01 VM
+### Task 4: Configure Static IP on Windows 10 (BANK-EMP01)
 
-Configured static IP 192.168.56.11
-
-Renamed computer to BANK-EMP01
-
-Verified connectivity to host and BANK-DC01
-
-Configuration Steps:
+**What We Did:**
+- Started BANK-EMP01 VM
+- Configured static IP 192.168.56.11
+- Renamed computer to BANK-EMP01
+- Verified connectivity to host and BANK-DC01
 
 **Configuration Steps:**
 
@@ -223,44 +220,38 @@ ping 8.8.8.8
 # Result: 4 replies (internet working) ✓
 ```
 
-Result:
+**Result:**
+- BANK-EMP01 configured with IP 192.168.56.11
+- Bidirectional communication with host and BANK-DC01 verified
+- Internet access via NAT confirmed
 
-BANK-EMP01 configured with IP 192.168.56.11
+**Minor Issue Encountered:**
+- Login screen showed "VM WINDOWS10" (local username) instead of "BANK-EMP01\VM WINDOWS10"
+- This is cosmetic only - Windows 10 login screen doesn't always display computer name for local accounts
+- Verified actual computer name using hostname command - confirmed as BANK-EMP01 ✓
 
-Bidirectional communication with host and BANK-DC01 verified
+✅ **Task 4 Complete**
 
-Internet access via NAT confirmed
+---
 
-Minor Issue Encountered:
+### Task 5: Configure Static IP on Ubuntu Server (BANK-WEB01)
 
-Login screen showed "VM WINDOWS10" (local username) instead of "BANK-EMP01\VM WINDOWS10"
+**What We Did:**
+- Started BANK-WEB01 VM (Ubuntu 24.02.2 LTS)
+- Identified network interfaces (enp0s3 for Host-Only, enp0s8 for NAT)
+- Configured static IP using NetworkManager (nmcli)
+- Changed hostname to BANK-WEB01
 
-This is cosmetic only - Windows 10 login screen doesn't always display computer name for local accounts
+**Commands/Configuration:**
 
-Verified actual computer name using hostname command - confirmed as BANK-EMP01 ✓
-
-✅ Task 4 Complete
-
-Task 5: Configure Static IP on Ubuntu Server (BANK-WEB01)
-What We Did:
-
-Started BANK-WEB01 VM (Ubuntu 24.02.2 LTS)
-
-Identified network interfaces (enp0s3 for Host-Only, enp0s8 for NAT)
-
-Configured static IP using NetworkManager (nmcli)
-
-Changed hostname to BANK-WEB01
-
-Commands/Configuration:
-
-Step 1 - Identify Network Interfaces:
-
+**Step 1 - Identify Network Interfaces:**
+```bash
 ip addr show
 
 # Output showed:
 # enp0s3: inet 192.168.56.102/24 (Host-Only - DHCP assigned)
 # enp0s8: inet 10.0.3.15/24 (NAT)
+```
 
 **Step 2 - Check NetworkManager Connections:**
 ```bash
@@ -280,7 +271,9 @@ sudo nmcli connection modify "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
 sudo nmcli connection modify "Wired connection 1" ipv4.method manual
 sudo nmcli connection down "Wired connection 1" && sudo nmcli connection up "Wired connection 1"
 ```
-Step 4 - Verify Configuration:
+
+**Step 4 - Verify Configuration:**
+```bash
 ip addr show enp0s3
 # inet 192.168.56.12/24 ✓
 
@@ -295,207 +288,208 @@ ping -c 4 192.168.56.11
 
 ping -c 4 8.8.8.8
 # 4 packets transmitted, 4 received (internet) ✓
+```
 
-Step 5 - Change Hostname:
+**Step 5 - Change Hostname:**
+```bash
 sudo hostnamectl set-hostname BANK-WEB01
 
 hostname
 # Output: BANK-WEB01 ✓
+```
+
 ![Ubuntu Network Configuration](screenshots/day2/20251207_Day02_Ubuntu_NetworkConfig.png)
 
-Result:
+**Result:**
+- BANK-WEB01 configured with static IP 192.168.56.12
+- All connectivity verified (host, other VMs, internet)
+- Hostname changed to BANK-WEB01
 
-BANK-WEB01 configured with static IP 192.168.56.12
+✅ **Task 5 Complete**
 
-All connectivity verified (host, other VMs, internet)
+---
 
-Hostname changed to BANK-WEB01
+### Task 6: Configure Static IP on Kali Linux (ATTACKER-EXT01)
 
-✅ Task 5 Complete
+**What We Did:**
+- Started ATTACKER-EXT01 VM (Kali Linux 2025.2)
+- Configured static IP 192.168.56.13 on eth0
+- Fixed routing to separate lab traffic from internet traffic
+- Changed hostname to ATTACKER-EXT01
 
-Task 6: Configure Static IP on Kali Linux (ATTACKER-EXT01)
-What We Did:
+**Commands/Configuration:**
 
-Started ATTACKER-EXT01 VM (Kali Linux 2025.2)
-
-Configured static IP 192.168.56.13 on eth0
-
-Fixed routing to separate lab traffic from internet traffic
-
-Changed hostname to ATTACKER-EXT01
-
-Commands/Configuration:
-
-Step 1 - Check Interfaces:
-
+**Step 1 - Check Interfaces:**
+```bash
 ip addr show
 
 # Output:
 # eth0: inet 192.168.56.103/24 (Host-Only)
 # eth1: inet 10.0.3.15/24 (NAT)
+```
 
-Step 2 - Configure Static IP:
-
+**Step 2 - Configure Static IP:**
+```bash
 sudo nmcli connection modify "Wired connection 1" ipv4.addresses 192.168.56.13/24
 sudo nmcli connection modify "Wired connection 1" ipv4.gateway 192.168.56.1
 sudo nmcli connection modify "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
 sudo nmcli connection modify "Wired connection 1" ipv4.method manual
 sudo nmcli connection down "Wired connection 1" && sudo nmcli connection up "Wired connection 1"
+```
 
-Step 3 - Fix Routing Issue:
+**Step 3 - Fix Routing Issue:**
 
-Problem: After configuration, could ping lab (192.168.56.x) but not internet (8.8.8.8)
+**Problem:** After configuration, could ping lab (192.168.56.x) but not internet (8.8.8.8)
 
-Diagnosis:
-
+**Diagnosis:**
+```bash
 ip route show
 
 # Output showed TWO default routes:
 # default via 192.168.56.1 dev eth0 metric 50  ← Lab gateway (WRONG for internet!)
 # default via 10.0.3.2 dev eth1 metric 101     ← NAT gateway (correct for internet)
+```
 
-Root Cause: eth0 had default gateway, causing ALL traffic (including internet) to route through Host-Only network
+**Root Cause:** eth0 had default gateway, causing ALL traffic (including internet) to route through Host-Only network
 
-Solution:
+**Solution:**
+```bash
 # Remove default gateway from eth0
 sudo nmcli connection modify "Wired connection 1" ipv4.gateway ""
 sudo nmcli connection modify "Wired connection 1" ipv4.never-default yes
 sudo nmcli connection down "Wired connection 1" && sudo nmcli connection up "Wired connection 1"
+```
 
-Verify Fix:
-
+**Verify Fix:**
+```bash
 ip route show
 
 # Corrected output:
 # default via 10.0.3.2 dev eth1 metric 101     ← Only ONE default (via NAT)
 # 192.168.56.0/24 dev eth0 scope link          ← Specific route for lab network
 # 10.0.3.0/24 dev eth1 scope link
+```
 
-Step 4 - Test Connectivity:
-
+**Step 4 - Test Connectivity:**
+```bash
 ping -c 4 192.168.56.1    # Host - 4 received ✓
 ping -c 4 192.168.56.10   # BANK-DC01 - 4 received ✓
 ping -c 4 192.168.56.11   # BANK-EMP01 - 4 received ✓
 ping -c 4 192.168.56.12   # BANK-WEB01 - 4 received ✓
 ping -c 4 8.8.8.8         # Internet - 4 received ✓
-Step 5 - Change Hostname:
+```
+
+**Step 5 - Change Hostname:**
+```bash
 sudo hostnamectl set-hostname ATTACKER-EXT01
 echo "127.0.0.1 ATTACKER-EXT01" | sudo tee -a /etc/hosts
 
 hostname
 # Output: ATTACKER-EXT01 ✓
+```
 
-Result:
+**Result:**
+- ATTACKER-EXT01 configured with static IP 192.168.56.13
+- Routing configured correctly (lab traffic via eth0, internet via eth1)
+- Can attack all lab VMs while maintaining internet access for tool downloads
 
-ATTACKER-EXT01 configured with static IP 192.168.56.13
+✅ **Task 6 Complete**
 
-Routing configured correctly (lab traffic via eth0, internet via eth1)
+---
 
-Can attack all lab VMs while maintaining internet access for tool downloads
+### Task 7: Configure VirtualBox Shared Folder
 
-✅ Task 6 Complete
+**What We Did:**
+- Installed VirtualBox Guest Additions on BANK-DC01
+- Created shared folder for easy file transfer between host and VMs
+- Configured vm-shared folder accessible as Z:\ drive in VMs
 
-Task 7: Configure VirtualBox Shared Folder
-What We Did:
+**Configuration Steps:**
 
-Installed VirtualBox Guest Additions on BANK-DC01
+**Step 1 - Install Guest Additions (on BANK-DC01):**
 
-Created shared folder for easy file transfer between host and VMs
+1. In VirtualBox window: Devices → Insert Guest Additions CD Image
+2. In VM: Open D:\ drive → Run VBoxWindowsAdditions.exe
+3. Click Next → Next → Install → Restart
 
-Configured vm-shared folder accessible as Z:\ drive in VMs
+**Step 2 - Create Shared Folder on Host:**
 
-Configuration Steps:
+1. Create folder: `C:\Bank-SOC-Project\vm-shared\`
+2. Create subfolders:
+   - `screenshots-dc01\`
+   - `screenshots-emp01\`
+   - `screenshots-web01\`
+   - `screenshots-kali\`
+   - `tools\`
 
-Step 1 - Install Guest Additions (on BANK-DC01):
+**Step 3 - Configure in VirtualBox:**
 
-In VirtualBox window: Devices → Insert Guest Additions CD Image
-In VM: Open D:\ drive → Run VBoxWindowsAdditions.exe
-Click Next → Next → Install → Restart
+1. Shut down BANK-DC01
+2. Right-click VM → Settings → Shared Folders
+3. Click + icon (Add new shared folder)
+4. Configure:
+   - Folder Path: `C:\Bank-SOC-Project\vm-shared`
+   - Folder Name: `vm-shared`
+   - ☑ Auto-mount
+   - ☑ Make Permanent
+   - Mount Point: (leave blank - auto-assigns Z:\)
+5. Click OK
 
-Step 2 - Create Shared Folder on Host:
+**Step 4 - Verify in VM:**
 
-Create folder: C:\Bank-SOC-Project\vm-shared\
-Create subfolders:
-  screenshots-dc01\
-  screenshots-emp01\
-  screenshots-web01\
-  screenshots-kali\
-  tools\
-
-  Step 3 - Configure in VirtualBox:
-
-Shut down BANK-DC01
-Right-click VM → Settings → Shared Folders
-Click + icon (Add new shared folder)
-
-Folder Path: C:\Bank-SOC-Project\vm-shared
-Folder Name: vm-shared
-☑ Auto-mount
-☑ Make Permanent
-Mount Point: (leave blank - auto-assigns Z:\)
-
-Click OK
-
-Step 4 - Verify in VM:
-
-Start BANK-DC01
-Open File Explorer → See Z:\ drive "vm-shared"
-Create test file: Z:\test.txt
-Verify on host: C:\Bank-SOC-Project\vm-shared\test.txt exists ✓
+1. Start BANK-DC01
+2. Open File Explorer → See Z:\ drive "vm-shared"
+3. Create test file: `Z:\test.txt`
+4. Verify on host: `C:\Bank-SOC-Project\vm-shared\test.txt` exists ✓
 
 ![Shared Folder Working](screenshots/day2/20251207_Day02_SharedFolder_Working.png)
 
-Result:
+**Result:**
+- Shared folder working bidirectionally
+- Host can drop tools/configs in `C:\Bank-SOC-Project\vm-shared\`
+- VMs access via Z:\ drive
+- Screenshots can be easily transferred for documentation
 
-Shared folder working bidirectionally
+✅ **Task 7 Complete**
 
-Host can drop tools/configs in C:\Bank-SOC-Project\vm-shared\
+---
 
-VMs access via Z:\ drive
+## 🔧 Technical Details
 
-Screenshots can be easily transferred for documentation
+**VMs Used:**
+- BANK-DC01 (Windows Server 2019): Demoted, renamed, IP configured
+- BANK-EMP01 (Windows 10): Renamed, IP configured
+- BANK-WEB01 (Ubuntu 24.02.2 LTS): Hostname changed, IP configured
+- ATTACKER-EXT01 (Kali Linux 2025.2): Hostname changed, IP configured, routing fixed
 
-✅ Task 7 Complete
+**Network Configuration:**
+- Network Range: 192.168.56.0/24
+- Host IP: 192.168.56.1
+- VM IPs: .10 (DC), .11 (EMP), .12 (WEB), .13 (ATTACKER)
 
-🔧 Technical Details
-VMs Used:
+**Tools/Technologies:**
+- VirtualBox 7.x: Network Manager, Guest Additions
+- NetworkManager (nmcli): Ubuntu/Kali network configuration
+- PowerShell: Windows Server configuration
+- Windows Settings: Windows 10 configuration
 
-BANK-DC01 (Windows Server 2019): Demoted, renamed, IP configured
+---
 
-BANK-EMP01 (Windows 10): Renamed, IP configured
+## 🐛 Troubleshooting
 
-BANK-WEB01 (Ubuntu 24.02.2 LTS): Hostname changed, IP configured
+### Problem 1: Kali Linux Routing Conflict (Internet Not Working)
 
-ATTACKER-EXT01 (Kali Linux 2025.2): Hostname changed, IP configured, routing fixed
-
-Network Configuration:
-
-Network Range: 192.168.56.0/24
-
-Host IP: 192.168.56.1
-
-VM IPs: .10 (DC), .11 (EMP), .12 (WEB), .13 (ATTACKER)
-
-Tools/Technologies:
-
-VirtualBox 7.x: Network Manager, Guest Additions
-
-NetworkManager (nmcli): Ubuntu/Kali network configuration
-
-PowerShell: Windows Server configuration
-
-Windows Settings: Windows 10 configuration
-
-🐛 Troubleshooting
-Problem 1: Kali Linux Routing Conflict (Internet Not Working)
-Symptom:
+**Symptom:**
+```bash
 ping -c 4 192.168.56.1    # Works ✓
 ping -c 4 8.8.8.8         # Times out ✗
+```
 
-Root Cause:
-eth0 (Host-Only) configured with default gateway, routing ALL traffic (including internet) through 192.168.56.1 instead of NAT gateway
+**Root Cause:**
+- eth0 (Host-Only) configured with default gateway, routing ALL traffic (including internet) through 192.168.56.1 instead of NAT gateway
 
-Solution:
+**Solution:**
+```bash
 # Diagnosed with route table:
 ip route show
 # Showed: default via 192.168.56.1 dev eth0 metric 50  ← Problem!
@@ -509,73 +503,62 @@ sudo nmcli connection restart "Wired connection 1"
 ip route show
 # Correct: default via 10.0.3.2 dev eth1  ← Only one default (NAT)
 #          192.168.56.0/24 dev eth0       ← Specific route for lab
+```
 
-Verification:
-
+**Verification:**
+```bash
 ping -c 4 192.168.56.1    # Lab - Works ✓
 ping -c 4 8.8.8.8         # Internet - Works ✓
+```
 
- Key Data Created
-CRITICAL - Future threads will need these exact values:
+---
 
-Network Configuration
-Host:
+## 📊 Key Data Created
 
-IP Address: 192.168.56.1
+**CRITICAL - Future threads will need these exact values:**
 
-Network Range: 192.168.56.0/24
+### Network Configuration
 
-Subnet Mask: 255.255.255.0
+**Host:**
+- IP Address: 192.168.56.1
+- Network Range: 192.168.56.0/24
+- Subnet Mask: 255.255.255.0
 
-VM Static IPs:
+**VM Static IPs:**
+- BANK-DC01: 192.168.56.10 (Windows Server 2019)
+- BANK-EMP01: 192.168.56.11 (Windows 10)
+- BANK-WEB01: 192.168.56.12 (Ubuntu 24.02.2 LTS)
+- ATTACKER-EXT01: 192.168.56.13 (Kali Linux 2025.2)
 
-BANK-DC01: 192.168.56.10 (Windows Server 2019)
+**VM Hostnames:**
+- BANK-DC01 - Domain Controller (to be promoted on Day 3)
+- BANK-EMP01 - Employee Workstation
+- BANK-WEB01 - Web Server
+- ATTACKER-EXT01 - Attack Simulation Box
 
-BANK-EMP01: 192.168.56.11 (Windows 10)
+### VirtualBox Network Adapters
 
-BANK-WEB01: 192.168.56.12 (Ubuntu 24.02.2 LTS)
-
-ATTACKER-EXT01: 192.168.56.13 (Kali Linux 2025.2)
-
-VM Hostnames:
-
-BANK-DC01 - Domain Controller (to be promoted on Day 3)
-
-BANK-EMP01 - Employee Workstation
-
-BANK-WEB01 - Web Server
-
-ATTACKER-EXT01 - Attack Simulation Box
-
-VirtualBox Network Adapters
 All VMs use dual adapters:
 
-Adapter 1: Host-only Adapter
+**Adapter 1: Host-only Adapter**
+- Static IP: 192.168.56.x
+- Purpose: Lab communication, Splunk log forwarding
 
-Static IP: 192.168.56.x
+**Adapter 2: NAT**
+- DHCP IP: 10.0.2.x or 10.0.3.x
+- Purpose: Internet access for tool downloads
 
-Purpose: Lab communication, Splunk log forwarding
+### Shared Folder Configuration
 
-Adapter 2: NAT
+- Host Path: `C:\Bank-SOC-Project\vm-shared\`
+- VM Mount Point: Z:\ (auto-mounted)
+- Auto-mount: Enabled
+- Permanent: Yes
 
-DHCP IP: 10.0.2.x or 10.0.3.x
+### DNS Configuration
 
-Purpose: Internet access for tool downloads
-
-Shared Folder Configuration
-Host Path: C:\Bank-SOC-Project\vm-shared\
-
-VM Mount Point: Z:\ (auto-mounted)
-
-Auto-mount: Enabled
-
-Permanent: Yes
-
-DNS Configuration
 All VMs currently use:
+- Primary DNS: 8.8.8.8 (Google)
+- Secondary DNS: 8.8.4.4 (Google)
 
-Primary DNS: 8.8.8.8 (Google)
-
-Secondary DNS: 8.8.4.4 (Google)
-
-Note: Will change to 192.168.56.10 (BANK-DC01) after DC promotion on Day 3
+**Note:** Will change to 192.168.56.10 (BANK-DC01) after DC promotion on Day 3
